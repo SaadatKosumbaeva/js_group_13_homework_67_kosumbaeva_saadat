@@ -26,7 +26,7 @@ export class EditMealComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.mealUploadingSubscription = this.mealsService.mealUploading.subscribe((isUploading: boolean) => {
       this.isUploading = isUploading;
-    })
+    });
     this.route.data.subscribe(data => {
       const meal = <Meal | null>data.meal;
 
@@ -47,10 +47,13 @@ export class EditMealComponent implements OnInit, OnDestroy {
           calories: ''
         })
       }
-    })
+    });
   }
 
   saveMeal() {
+    if (!this.mealForm.value.description.trim().length || !String(this.mealForm.value.calories).length) {
+      return;
+    }
     const id = this.editedId || Math.random().toString();
     const meal = new Meal(id, this.mealForm.value.time, this.mealForm.value.description, this.mealForm.value.calories);
 
@@ -71,7 +74,7 @@ export class EditMealComponent implements OnInit, OnDestroy {
   setFormValue(value: { [key: string]: any }) {
     setTimeout(() => {
       this.mealForm.setValue(value);
-    })
+    });
   }
 
   ngOnDestroy() {

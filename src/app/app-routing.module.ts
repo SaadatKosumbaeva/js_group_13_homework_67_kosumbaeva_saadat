@@ -7,9 +7,11 @@ import { MealResolverService } from './meals/meal-resolver.service';
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'meals/new', component: EditMealComponent},
-  {path: 'meals/:id/edit', component: EditMealComponent, resolve:{
-    meal: MealResolverService
-    }}
+  {
+    path: 'meals/:id/edit', component: EditMealComponent, resolve: {
+      meal: MealResolverService
+    }
+  },
 ];
 
 @NgModule({

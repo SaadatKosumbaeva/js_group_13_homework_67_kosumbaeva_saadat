@@ -13,6 +13,7 @@ export class MealsService {
   mealsChange = new Subject<Meal[]>();
   mealsFetching = new Subject<boolean>();
   mealUploading = new Subject<boolean>();
+  mealRemoving = new Subject<boolean>();
 
   constructor(private http: HttpClient) {
   }
@@ -32,8 +33,12 @@ export class MealsService {
         this.mealsChange.next(result);
         this.mealsFetching.next(false);
       }, () => {
+        if (this.meals.length === 1) {
+          this.meals = [];
+          this.mealsChange.next(this.meals);
+        }
         this.mealsFetching.next(false);
-      })
+      });
   }
 
   fetchMeal(id: string) {
@@ -44,7 +49,7 @@ export class MealsService {
         }
         return new Meal(id, result.time, result.description, result.calories);
       })
-    )
+    );
   }
 
   addMeal(meal: Meal) {
@@ -61,7 +66,7 @@ export class MealsService {
       }, () => {
         this.mealUploading.next(false);
       })
-    )
+    );
   }
 
   editMeal(meal: Meal) {
@@ -78,7 +83,18 @@ export class MealsService {
       }, () => {
         this.mealUploading.next(false);
       })
-    )
+    );
+  }
+
+  removeMeal(id: string) {
+    this.mealRemoving.next(true);
+    return this.http.delete(`https://skosumbaeva2502-default-rtdb.firebaseio.com/meals/${id}.json`).pipe(
+      tap(() => {
+        this.mealRemoving.next(false);
+      }, () => {
+        this.mealRemoving.next(false);
+      })
+    );
   }
 
 }
