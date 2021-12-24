@@ -9,8 +9,8 @@
         <p class="card-text"><strong>{{ meal.calories }} kcal</strong></p>
       </div>
       <div class="col-2 row flex-column">
-        <a href="#" class="btn btn-secondary mb-2">Edit</a>
-        <button href="#" class="btn btn-danger">Delete</button>
+        <a [routerLink]="['meals', meal.id, 'edit']" class="btn btn-secondary mb-2">Edit</a>
+        <button class="btn btn-danger">Delete</button>
       </div>
     </div>
   </div>

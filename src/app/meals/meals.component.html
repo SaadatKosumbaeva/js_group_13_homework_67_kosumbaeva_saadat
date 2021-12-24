@@ -1,2 +1,7 @@
-<app-meal *ngFor="let meal of meals" [meal]="meal"></app-meal>
+<ng-container *ngIf="!isFetching">
+  <app-meal *ngFor="let meal of meals" [meal]="meal"></app-meal>
+</ng-container>
 
+<div class="spinner-border" *ngIf="isFetching">
+  <span class="sr-only">Loading...</span>
+</div>

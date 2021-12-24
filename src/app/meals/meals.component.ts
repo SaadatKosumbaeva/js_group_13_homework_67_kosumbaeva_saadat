@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MealsService } from '../shared/meals.service';
 import { Subscription } from 'rxjs';
 import { Meal } from '../shared/meal.model';
@@ -8,13 +8,14 @@ import { Meal } from '../shared/meal.model';
   templateUrl: './meals.component.html',
   styleUrls: ['./meals.component.css']
 })
-export class MealsComponent implements OnInit {
+export class MealsComponent implements OnInit, OnDestroy {
   mealsFetchingSubscription!: Subscription;
   mealsChangeSubscription!: Subscription;
   isFetching = false;
   meals: Meal[] = [];
 
-  constructor(private mealsService: MealsService) { }
+  constructor(private mealsService: MealsService) {
+  }
 
   ngOnInit(): void {
     this.meals = this.mealsService.meals;
@@ -25,6 +26,11 @@ export class MealsComponent implements OnInit {
       this.meals = meals;
     })
     this.mealsService.fetchMeals();
+  }
+
+  ngOnDestroy(): void {
+    this.mealsFetchingSubscription.unsubscribe();
+    this.mealsChangeSubscription.unsubscribe();
   }
 
 }
