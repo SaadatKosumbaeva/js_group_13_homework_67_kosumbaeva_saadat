@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   meals: Meal[] = [];
+  todayMeals: Meal[] = [];
   mealsChangeSubscription!: Subscription;
 
   constructor(private mealsService: MealsService) {
@@ -19,13 +20,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.meals = this.mealsService.meals;
     this.mealsChangeSubscription = this.mealsService.mealsChange.subscribe((meals: Meal[]) => {
       this.meals = meals;
+      this.mealsService.fetchTodayMeals().subscribe(result => {
+        this.todayMeals = result;
+      });
     });
     this.mealsService.fetchMeals();
+    this.mealsService.fetchTodayMeals().subscribe(result => {
+      this.todayMeals = result;
+    });
   }
 
   getTotalCalories() {
     let calories = 0;
-    this.meals.forEach(meal => {
+    this.todayMeals.forEach(meal => {
       calories += parseInt(String(meal.calories));
     })
     return calories;

@@ -8,6 +8,7 @@ import { Meal } from '../shared/meal.model';
   templateUrl: './meals.component.html',
   styleUrls: ['./meals.component.css']
 })
+
 export class MealsComponent implements OnInit, OnDestroy {
   mealsFetchingSubscription!: Subscription;
   mealsChangeSubscription!: Subscription;
@@ -23,8 +24,17 @@ export class MealsComponent implements OnInit, OnDestroy {
       this.isFetching = isFetching;
     });
     this.mealsChangeSubscription = this.mealsService.mealsChange.subscribe((meals: Meal[]) => {
+        meals.sort((a: Meal, b: Meal) => {
+          if (a.date < b.date) {
+            return 1;
+          } else if (b.date < a.date) {
+            return -1;
+          } else {
+            return 0;
+          }
+        });
       this.meals = meals;
-    })
+    });
     this.mealsService.fetchMeals();
   }
 

@@ -17,6 +17,7 @@ export class EditMealComponent implements OnInit, OnDestroy {
   isUploading = false;
   isEdit = false;
   editedId = '';
+  date = '';
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -36,7 +37,8 @@ export class EditMealComponent implements OnInit, OnDestroy {
         this.setFormValue({
           time: meal.time,
           description: meal.description,
-          calories: meal.calories
+          calories: meal.calories,
+          date: meal.date
         })
       } else {
         this.isEdit = false;
@@ -44,7 +46,8 @@ export class EditMealComponent implements OnInit, OnDestroy {
         this.setFormValue({
           time: 'breakfast',
           description: '',
-          calories: ''
+          calories: '',
+          date: new Date().toISOString().slice(0, 10),
         })
       }
     });
@@ -55,7 +58,7 @@ export class EditMealComponent implements OnInit, OnDestroy {
       return;
     }
     const id = this.editedId || Math.random().toString();
-    const meal = new Meal(id, this.mealForm.value.time, this.mealForm.value.description, this.mealForm.value.calories);
+    const meal = new Meal(id, this.mealForm.value.time, this.mealForm.value.description, this.mealForm.value.calories, this.mealForm.value.date);
 
     const next = () => {
       this.mealsService.fetchMeals();

@@ -24,7 +24,7 @@ export class MealsService {
       map(result => {
         return Object.keys(result).map(id => {
           const mealData = result[id];
-          return new Meal(id, mealData.time, mealData.description, mealData.calories);
+          return new Meal(id, mealData.time, mealData.description, mealData.calories, mealData.date);
         })
       })
     )
@@ -41,13 +41,25 @@ export class MealsService {
       });
   }
 
+  fetchTodayMeals() {
+    const date = new Date().toISOString().slice(0, 10);
+    return this.http.get<{ [id: string]: Meal }>(`https://skosumbaeva2502-default-rtdb.firebaseio.com/meals.json?orderBy="date"&equalTo="${date}"`).pipe(
+      map(result => {
+        return Object.keys(result).map(id => {
+          const mealData = result[id];
+          return new Meal(mealData.id, mealData.time, mealData.description, mealData.calories, mealData.date);
+        })
+      })
+    );
+  }
+
   fetchMeal(id: string) {
     return this.http.get<Meal | null>(`https://skosumbaeva2502-default-rtdb.firebaseio.com/meals/${id}.json`).pipe(
       map(result => {
         if (!result) {
           return null;
         }
-        return new Meal(id, result.time, result.description, result.calories);
+        return new Meal(id, result.time, result.description, result.calories, result.date);
       })
     );
   }
@@ -56,7 +68,8 @@ export class MealsService {
     const body = {
       time: meal.time,
       description: meal.description,
-      calories: meal.calories
+      calories: meal.calories,
+      date: meal.date
     }
 
     this.mealUploading.next(true);
@@ -73,7 +86,8 @@ export class MealsService {
     const body = {
       time: meal.time,
       description: meal.description,
-      calories: meal.calories
+      calories: meal.calories,
+      date: meal.date
     }
 
     this.mealUploading.next(true);
